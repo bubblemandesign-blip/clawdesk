@@ -111,6 +111,15 @@ export async function writeConfig(apiKey: string, advancedOptions?: any): Promis
         },
     };
 
+    // Telegram Support
+    if (advancedOptions?.telegramToken) {
+        config.channels.telegram = {
+            enabled: true,
+            token: advancedOptions.telegramToken,
+            allowedUsers: advancedOptions.telegramChatId ? [advancedOptions.telegramChatId] : []
+        };
+    }
+
     if (BASE_URLS[provider]) {
         config.agent.connection = { baseUrl: BASE_URLS[provider] };
     }
