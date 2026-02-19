@@ -27,6 +27,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [advancedOptions, setAdvancedOptions] = useState<AdvancedOptions>({
+    launchOnStartup: false,
     fullFileSystem: false,
     browserWithLogin: false,
     autoApproveSafe: false,
@@ -151,6 +152,29 @@ export default function App() {
   async function handleSettingsSave(newOptions: AdvancedOptions) {
     setAdvancedOptions(newOptions);
     setShowSettings(false);
+
+    const { invoke } = await import('@tauri-apps/api/core');
+
+    // Handle Launch on Startup (Windows only for now)
+    try {
+      const platform = await invoke('get_platform') as string;
+      if (platform === 'windows') {
+        const appPath = await invoke('run_sync_command', { cmd: 'powershell', args: ['-Command', '[System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName'] }) as string;
+        const startupDir = await invoke('run_sync_command', { cmd: 'powershell', args: ['-Command', '$env:APPDATA + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup"'] }) as string;
+        const shortcutPath = `${startupDir.trim()}\\ClawDesk.lnk`;
+
+        if (newOptions.launchOnStartup) {
+          await invoke('run_sync_command', {
+            cmd: 'powershell',
+            args: ['-Command', `$s=(New-Object -Com Object WScript.Shell).CreateShortcut('${shortcutPath}');$s.TargetPath='${appPath.trim()}';$s.Save()`]
+          });
+        } else {
+          await invoke('run_sync_command', { cmd: 'powershell', args: ['-Command', `if(Test-Path '${shortcutPath}'){ Remove-Item '${shortcutPath}' }`] });
+        }
+      }
+    } catch (e) {
+      console.error('Failed to update startup settings:', e);
+    }
 
     // Trigger restart
     const key = await getApiKey();

@@ -7,6 +7,7 @@ interface SettingsScreenProps {
 }
 
 export interface AdvancedOptions {
+    launchOnStartup: boolean;
     fullFileSystem: boolean;
     browserWithLogin: boolean;
     autoApproveSafe: boolean;
@@ -17,7 +18,7 @@ export interface AdvancedOptions {
 
 export default function SettingsScreen({ onClose, onSave, currentOptions }: SettingsScreenProps) {
     const [options, setOptions] = useState<AdvancedOptions>(currentOptions);
-    const [tab, setTab] = useState<'SECURITY' | 'TELEGRAM' | 'MOBILE'>('SECURITY');
+    const [tab, setTab] = useState<'GENERAL' | 'SECURITY' | 'TELEGRAM' | 'MOBILE'>('GENERAL');
     const [confirmedRisks, setConfirmedRisks] = useState(false);
 
     const toggle = (key: keyof AdvancedOptions) => {
@@ -35,6 +36,7 @@ export default function SettingsScreen({ onClose, onSave, currentOptions }: Sett
             <div className="settings-card glass-panel">
                 <div className="settings-header">
                     <div className="settings-tabs">
+                        <button className={`tab-btn ${tab === 'GENERAL' ? 'active' : ''}`} onClick={() => setTab('GENERAL')}>General</button>
                         <button className={`tab-btn ${tab === 'SECURITY' ? 'active' : ''}`} onClick={() => setTab('SECURITY')}>Security</button>
                         <button className={`tab-btn ${tab === 'TELEGRAM' ? 'active' : ''}`} onClick={() => setTab('TELEGRAM')}>Telegram</button>
                         <button className={`tab-btn ${tab === 'MOBILE' ? 'active' : ''}`} onClick={() => setTab('MOBILE')}>Mobile</button>
@@ -43,6 +45,25 @@ export default function SettingsScreen({ onClose, onSave, currentOptions }: Sett
                 </div>
 
                 <div className="settings-content">
+                    {tab === 'GENERAL' && (
+                        <div className="general-section">
+                            <h3>⚙️ General Settings</h3>
+                            <div className="toggle-group" style={{ marginTop: '16px' }}>
+                                <label className="toggle-item">
+                                    <div className="toggle-info">
+                                        <span className="toggle-title">Launch ClawDesk on startup</span>
+                                        <span className="toggle-warn">App will start automatically when you log in.</span>
+                                    </div>
+                                    <input
+                                        type="checkbox"
+                                        checked={options.launchOnStartup}
+                                        onChange={() => toggle('launchOnStartup')}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
                     {tab === 'SECURITY' && (
                         <>
                             <div className="security-summary">
