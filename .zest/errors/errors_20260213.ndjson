@@ -1,0 +1,7 @@
+{"ts": "2026-02-13T15:50:37Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260213_184459"}
+{"ts": "2026-02-13T16:26:38Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260213_192436"}
+{"ts": "2026-02-13T17:39:49Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260213_203756"}
+{"ts": "2026-02-13T18:17:04Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260213_211442"}
+{"ts": "2026-02-13T21:01:24Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260213_235836"}
+{"ts": "2026-02-13T21:10:34Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260214_000702"}
+{"ts": "2026-02-13T21:22:23Z", "context": "run_continue", "message": "'str' object has no attribute 'get'", "session_id": "20260214_001925"}

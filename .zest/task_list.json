@@ -1,0 +1,128 @@
+{
+  "tasks": [
+    {
+      "task_id": 1,
+      "task_name": "Define project scope and goals",
+      "status": "Not started",
+      "id": "task_6",
+      "description": "",
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": [],
+      "acceptance_criteria": []
+    },
+    {
+      "task_id": 2,
+      "task_name": "Gather requirements",
+      "status": "Not started",
+      "id": "task_6",
+      "description": "",
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": [],
+      "acceptance_criteria": []
+    },
+    {
+      "task_id": 3,
+      "task_name": "Design system architecture",
+      "status": "Not started",
+      "id": "task_6",
+      "description": "",
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": [],
+      "acceptance_criteria": []
+    },
+    {
+      "task_id": 4,
+      "task_name": "Develop initial codebase",
+      "status": "Not started",
+      "id": "task_6",
+      "description": "",
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": [],
+      "acceptance_criteria": []
+    },
+    {
+      "task_id": 5,
+      "task_name": "Integrate and test components",
+      "status": "Not started",
+      "id": "task_6",
+      "description": "",
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": [],
+      "acceptance_criteria": []
+    },
+    {
+      "task_id": 6,
+      "task_name": "Deploy and launch project",
+      "status": "Not started",
+      "id": "task_6",
+      "description": "",
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": [],
+      "acceptance_criteria": []
+    },
+    {
+      "id": "chat_1770994917",
+      "category": "feature",
+      "description": "ابني تطبيق لي صفحة وكالة",
+      "steps": [],
+      "acceptance_criteria": [
+        "User request completed"
+      ],
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": []
+    },
+    {
+      "id": "chat_1770997499",
+      "category": "feature",
+      "description": "ابني منصة لي agemts skıls",
+      "steps": [],
+      "acceptance_criteria": [
+        "User request completed"
+      ],
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": []
+    },
+    {
+      "id": "chat_1770999876",
+      "category": "feature",
+      "description": "ابني تطبيق لي صفحة وكالة ابني منصة لي agemts skıls",
+      "steps": [],
+      "acceptance_criteria": [
+        "User request completed"
+      ],
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": []
+    },
+    {
+      "id": "chat_1771006482",
+      "category": "feature",
+      "description": "ابني تطبيق لي صفحة وكالة ابني منصة لي agemts skıls ابني تطبيق لي صفحة وكالة ابني منصة لي agemts skıls",
+      "steps": [],
+      "acceptance_criteria": [
+        "User request completed"
+      ],
+      "passes": false,
+      "depends_on": [],
+      "effort": "medium",
+      "context_refs": []
+    }
+  ]
+}

@@ -1,0 +1,364 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CLAWDESK BUILD INSTRUCTIONS — COMPLETE & FINAL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+APPROVED. Proceed with full build: Phase 0 → Phase 1 → Phase 3.
+
+DO NOT build Phase 2 (Auth/Payments) yet. Stop after Phase 3 verification passes.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CRITICAL CORRECTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. OPENCLAW VERSION:
+   Use: 2026.2.14 (NOT 2025.2.1)
+   Reason: 2025.2.1 doesn't exist. Versions before 2026.1.29 have RCE vulnerability.
+
+2. After npm install openclaw:
+   Always run: openclaw doctor --no-prompt
+
+3. NEVER use npm install -g:
+   Always: npm install --prefix [appDataDir]/engine openclaw@2026.2.14
+
+4. Node.js: Pin to v22.x LTS, install locally in appDataDir
+
+5. Rust install: via rustup (200MB download) — APPROVED
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECURITY MODEL — PROGRESSIVE TRUST (CRITICAL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Default openclaw.json config MUST include this exact toolPolicy:
+
+{
+  "agent": {
+    "model": "[detected from API key]"
+  },
+  "agents": {
+    "defaults": {
+      "heartbeat": {
+        "every": "30m",
+        "activeHours": { "start": "08:00", "end": "22:00" }
+      },
+      "maxConcurrent": 4,
+      "subagents": { "maxConcurrent": 8 },
+      
+      "toolPolicy": {
+        "read": {
+          "mode": "sandbox",
+          "allowedPaths": [
+            "~/Documents",
+            "~/Downloads", 
+            "~/Desktop"
+          ],
+          "blockedPaths": [
+            "~/.ssh",
+            "~/.aws",
+            "~/.config",
+            "~/.*"
+          ]
+        },
+        
+        "write": {
+          "mode": "sandbox",
+          "allowedPaths": [
+            "~/Documents/ClawDesk",
+            "~/Desktop"
+          ]
+        },
+        
+        "exec": {
+          "mode": "confirm-each",
+          "allowlist": ["ls", "pwd", "cat", "echo", "grep"],
+          "blocklist": ["rm", "dd", "sudo", "chmod", "curl", "wget", "ssh"]
+        },
+        
+        "browser": {
+          "mode": "isolated-profile",
+          "clearOnExit": true,
+          "allowCookies": false,
+          "blockedDomains": [
+            "*login*",
+            "*signin*", 
+            "*.bank.*",
+            "*paypal*"
+          ]
+        },
+        
+        "memory": "allow"
+      },
+      
+      "skillPolicy": {
+        "builtInSkills": "allow",
+        "thirdPartySkills": "confirm"
+      },
+      
+      "sandbox": {
+        "mode": "non-main"
+      }
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "bind": "loopback"
+  },
+  "channels": {
+    "webchat": { "enabled": true }
+  }
+}
+
+WHY these restrictions:
+- Sandbox paths: prevent accidental access to sensitive files
+- exec confirm-each: user sees EVERY command before it runs
+- Browser isolated: no cookies/login by default
+- Skills confirm: user approves third-party skills before install
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SETTINGS SCREEN — ADVANCED MODE UNLOCK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Add Settings screen accessible from ChatScreen top bar.
+
+Must include "Advanced Mode" section with toggles:
+
+┌────────────────────────────────────────┐
+│ 🔒 Security Level: Protected (Default) │
+│                                        │
+│ Your AI can:                           │
+│ ✅ Read Documents/Downloads/Desktop    │
+│ ✅ Write to ClawDesk folder            │
+│ ✅ Browse web (isolated, no login)     │
+│ ⚠️ Run commands (asks first)           │
+│                                        │
+│ [▓▓▓░░░] Power Level: Safe             │
+│                                        │
+│ ⚙️ Advanced Mode (for power users)     │
+│                                        │
+│ [ ] Full file system access            │
+│     ⚠️ AI can read/write ANY file      │
+│                                        │
+│ [ ] Browser with login                 │
+│     ⚠️ AI can access Gmail, banks      │
+│                                        │
+│ [ ] Auto-approve safe commands         │
+│     ⚠️ ls/cat/pwd run without asking   │
+│                                        │
+│ [ ] Third-party skills auto-install    │
+│     ⚠️ Skills from ClawHub install     │
+│     without confirmation               │
+│                                        │
+│ [✓ I understand the risks]             │
+│ [Enable Selected Options]              │
+└────────────────────────────────────────┘
+
+When user enables any Advanced option:
+  → Show confirmation dialog
+  → Update openclaw.json with new permissions
+  → Restart gateway with new config
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COMMAND CONFIRMATION UI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+When exec mode is "confirm-each", show modal overlay in ChatScreen:
+
+┌────────────────────────────────────┐
+│ 🤖 AI wants to run:                │
+│                                    │
+│ rm -rf ~/old-project               │
+│                                    │
+│ ⚠️ This will DELETE files:         │
+│ • ~/old-project/file1.txt          │
+│ • ~/old-project/file2.txt          │
+│ • ~/old-project/subfolder/...      │
+│ (47 files total)                   │
+│                                    │
+│ [ Allow Once ]  [ Deny ]           │
+└────────────────────────────────────┘
+
+Implementation:
+  - Gateway pauses execution
+  - Sends command to frontend for approval
+  - Frontend shows modal, waits for user choice
+  - User clicks → response sent back to gateway
+  - Gateway continues or aborts based on response
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SKILLS HANDLING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+53 built-in OpenClaw skills: enabled by default (safe, no confirmation).
+
+3000+ ClawHub community skills:
+  - User can install from ClawHub
+  - When AI tries to install a third-party skill:
+    Show confirmation dialog:
+    
+    ┌────────────────────────────────┐
+    │ Install skill?                 │
+    │                                │
+    │ gmail-reader (by @username)    │
+    │                                │
+    │ Permissions requested:         │
+    │ • Read files                   │
+    │ • Network access               │
+    │ • Browser cookies              │
+    │                                │
+    │ ⚠️ Third-party skills can       │
+    │ access your data               │
+    │                                │
+    │ [ Install ]  [ Deny ]          │
+    └────────────────────────────────┘
+
+No pre-curation needed — OpenClaw cleaned malicious ones.
+Just show permissions clearly.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PUBLISHING PIPELINE — CLARIFIED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You are building GitHub Actions correctly.
+But here's the FULL flow users will experience:
+
+1. BUILD (GitHub — invisible to users):
+   - Code on GitHub repo
+   - Tag v0.1.0 pushed
+   - GitHub Actions runs (Windows/Mac/Linux jobs)
+   - .msi, .dmg, .AppImage built automatically
+   - Files uploaded to GitHub Releases
+
+2. DISTRIBUTION (Landing Page — what users see):
+   - Landing page at clawdesk.app (Vercel)
+   - Three download buttons:
+     [Download for Windows] → https://github.com/user/clawdesk/releases/latest/download/ClawDesk.msi
+     [Download for Mac]     → https://github.com/user/clawdesk/releases/latest/download/ClawDesk.dmg
+     [Download for Linux]   → https://github.com/user/clawdesk/releases/latest/download/ClawDesk.AppImage
+
+Users NEVER go to GitHub. They only see clawdesk.app.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TWO-PHASE STRATEGY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PHASE 1 (BUILD THIS NOW): Free Version — NO AUTH
+
+User experience:
+  1. Download ClawDesk from clawdesk.app
+  2. Open app
+  3. Enter THEIR OWN API key (from Anthropic/OpenAI/Google)
+  4. Click Start
+  5. Chat with AI using their key
+  
+We make: $0
+Goal: Validate people actually want this.
+
+DO NOT BUILD YET:
+  ✗ Supabase authentication
+  ✗ User accounts
+  ✗ Payment system (LemonSqueezy)
+  ✗ Pro plans
+  ✗ "Upgrade" button
+
+These come in Phase 2 AFTER we have 100+ active free users.
+
+PHASE 2 (LATER): Pro Version — WITH AUTH
+
+After Phase 1 proves demand:
+  - Add "Upgrade to Pro" button in app
+  - Opens clawdesk.app/signup
+  - Supabase Auth + LemonSqueezy payment
+  - User pays $9.99/month
+  - OUR API key works automatically
+  - No need for their own Anthropic account
+
+But Phase 2 is BLOCKED until Phase 1 succeeds.
+Do not build Phase 2 now.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHASE 3: DISTRIBUTION — BUILD THIS NOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After Phase 0-1 complete (app works on dev machine):
+
+Step 3.1 — App Icon
+  Generate 1024x1024 PNG: orange claw logo on #1a1a2e background
+  Save to: src-tauri/icons/icon.png
+  Run: pnpm tauri icon src-tauri/icons/icon.png
+  This generates all required sizes.
+
+Step 3.2 — tauri.conf.json final config
+  See the complete config in previous messages.
+  Must include:
+    - CSP allowing API endpoints
+    - WebView2 bootstrapper for Windows
+    - Universal build target for Mac
+    - Bundle targets: all
+
+Step 3.3 — GitHub repo
+  .gitignore: node_modules/, target/, dist/, *.bak.*, .env
+  README.md: basic project description
+  git init, commit, push to GitHub
+
+Step 3.4 — GitHub Actions
+  .github/workflows/release.yml
+  3 jobs: build-windows, build-mac, build-linux
+  Trigger: on tag v*
+  Upload artifacts to GitHub Release
+
+Step 3.5 — Landing page
+  landing/index.html deployed to Vercel
+  Design matching app branding
+  Download buttons for all 3 platforms
+  Windows/Mac warning sections
+  "Privacy First" messaging
+
+Step 3.6 — First release
+  git tag v0.1.0
+  git push origin v0.1.0
+  Wait for Actions to complete
+  Verify 3 files in GitHub Release
+  Test download from landing page
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINAL VERIFICATION CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before marking complete, ALL must pass:
+
+Core:
+□ Valid API key → Chat in < 60 seconds
+□ Invalid key → Clear error, no stack traces
+□ Close terminal → app keeps running
+□ Close/reopen → Chat in < 5 seconds, no onboarding
+□ Sleep/wake → auto-recovery with "Reconnecting" banner
+□ Open twice → second instance focuses first window
+
+Security:
+□ Default config has sandbox paths
+□ exec commands show confirmation modal
+□ Advanced Mode section in Settings
+□ Each Advanced toggle shows warning
+□ Browser blocked from login domains by default
+
+UI/Branding:
+□ Icon is orange claw (not Tauri default)
+□ Window title is "ClawDesk"
+□ Background #0d0d1a, accent #ff6b35
+□ Font is Inter
+□ All screens match branding
+
+Distribution:
+□ pnpm tauri build succeeds locally
+□ GitHub Actions: all 3 jobs green
+□ GitHub Release has .msi + .dmg + .AppImage
+□ Landing page live on Vercel
+□ Download buttons work
+□ Install on different Windows machine → Chat works
+□ Install on Mac (test both Intel and M1 if possible) → Chat works
+
+Skills:
+□ 53 built-in skills available
+□ Third-party skill install shows permission dialog
+□ Advanced Mode can disable skill confirmation
+
+DO NOT PROCEED TO PHASE 2 UNTIL THIS CHECKLIST PASSES.

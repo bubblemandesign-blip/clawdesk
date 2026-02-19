@@ -1,0 +1,500 @@
+Phase 3 is incomplete. "pnpm tauri build" only builds on my machine.
+I need the full publishing pipeline with branding. Complete everything below.
+Do not stop until every checkbox in the verification section passes.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANDING — APPLY EVERYWHERE CONSISTENTLY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Product name: ClawDesk
+Tagline:      "Your AI assistant. On your computer. Private."
+Sub-tagline:  "Powered by OpenClaw — 145,000 GitHub stars"
+
+Colors:
+  Primary background: #0d0d1a  (very dark navy)
+  Secondary bg:       #1a1a2e  (dark navy)
+  Accent:             #ff6b35  (orange — matches claw concept)
+  Accent hover:       #ff8c55  (lighter orange)
+  Text primary:       #ffffff
+  Text secondary:     #a0a0b0  (muted)
+  Success green:      #00d4aa
+  Error red:          #ff4757
+  Border:             #2a2a4a
+
+Typography:
+  Font: Inter (Google Fonts, free)
+  Heading: 700 weight
+  Body: 400 weight
+  Monospace (for key input): JetBrains Mono or system monospace
+
+Logo concept:
+  A minimalist claw/talon shape in orange (#ff6b35)
+  On dark background — simple, clean, recognizable at small sizes
+  NOT the emoji 🦞 — a proper SVG vector icon
+  Style: flat design, single color, works at 16px and 1024px
+
+Icon file hierarchy (Tauri requires all of these):
+  src-tauri/icons/icon.png         (1024x1024 — source)
+  src-tauri/icons/icon.ico         (Windows — auto-generated)
+  src-tauri/icons/icon.icns        (Mac — auto-generated)
+  src-tauri/icons/32x32.png        (auto-generated)
+  src-tauri/icons/128x128.png      (auto-generated)
+  src-tauri/icons/128x128@2x.png   (auto-generated)
+
+Generate with: pnpm tauri icon src-tauri/icons/icon.png
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.1 — tauri.conf.json FINAL CONFIG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Update tauri.conf.json to exactly this (replace existing):
+
+{
+  "productName": "ClawDesk",
+  "version": "0.1.0",
+  "identifier": "com.clawdesk.app",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "ClawDesk",
+        "width": 1100,
+        "height": 750,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "center": true,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' http://localhost:18789 ws://localhost:18789 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; connect-src 'self' http://localhost:18789 ws://localhost:18789 https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "wix": {},
+      "nsis": {}
+    }
+  }
+}
+
+IMPORTANT — why these exact settings:
+- minWidth/minHeight: prevents users resizing to unusable size
+- csp: allows localhost:18789 (OpenClaw) AND API endpoints for key validation
+- "targets": "all" builds both msi AND nsis on Windows (two installer types)
+- identifier must be reverse-domain format for Mac/Linux compatibility
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.2 — UI SCREENS — APPLY BRANDING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Update all screens to use the branding above.
+
+Global CSS (src/styles/global.css):
+  background: #0d0d1a
+  color: #ffffff
+  font-family: Inter, system-ui, sans-serif
+  No default browser styling
+
+OnboardingScreen:
+  Centered card on dark background
+  Logo SVG at top (orange claw shape, ~60px)
+  "ClawDesk" in white, 32px bold
+  "Your AI assistant. On your computer. Private." in #a0a0b0, 16px
+  Input field: dark border (#2a2a4a), white text, monospace font
+  Placeholder: "sk-ant-api03-..."
+  Provider badge appears as user types:
+    sk-ant- detected → small orange badge "Anthropic"
+    sk- detected     → small badge "OpenAI"
+    AIza detected    → small badge "Google"
+  "Where do I get this key?" link in orange, below input
+  Start button: orange (#ff6b35) background, white text, full width
+  Button hover: #ff8c55
+
+LoadingScreen:
+  Same dark background
+  Logo + name at top
+  Centered status message in white
+  Progress bar: orange fill on dark track
+  Hint text in #a0a0b0 (appears after 30 seconds)
+
+ChatScreen:
+  Top bar: #1a1a2e, height 40px
+  Left: ClawDesk logo (small, 24px) + "ClawDesk" text in white
+  Right: "📱 Phone" button (subtle, outline style)
+  Right: "⚙" settings button
+  Status dot: 8px circle, #00d4aa when connected
+  WebView: takes remaining 100% height, no border
+  Reconnecting banner: orange background, white text, full width, top of screen
+
+ErrorScreen:
+  Centered card
+  Red icon (✗) at top
+  Error message in white, 18px
+  Solution text in #a0a0b0, 14px
+  "Try Again" button in orange
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.3 — GITHUB REPOSITORY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create .gitignore:
+  node_modules/
+  src-tauri/target/
+  dist/
+  .env
+  *.bak.*
+  .DS_Store
+  Thumbs.db
+  *.log
+
+Create README.md:
+  # ClawDesk
+  Your AI assistant. On your computer. Private.
+  
+  Powered by [OpenClaw](https://github.com/openclaw/openclaw).
+  No terminal. No setup. Just download and talk.
+  
+  ## Download
+  [Download for Windows / Mac / Linux →](https://clawdesk.app)
+  
+  ## Development
+  ```
+  pnpm install
+  pnpm tauri dev
+  ```
+
+Then:
+  git init
+  git add .
+  git commit -m "feat: initial ClawDesk v0.1.0"
+  git branch -M main
+  git remote add origin https://github.com/[username]/clawdesk
+  git push -u origin main
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.4 — GITHUB ACTIONS
+file: .github/workflows/release.yml
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+name: Release ClawDesk
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+jobs:
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install frontend dependencies
+        run: pnpm install
+      - name: Build Tauri app
+        run: pnpm tauri build
+      - name: Upload Windows installers
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            src-tauri/target/release/bundle/msi/*.msi
+            src-tauri/target/release/bundle/nsis/*.exe
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Add Mac targets (Intel + Apple Silicon)
+        run: |
+          rustup target add aarch64-apple-darwin
+          rustup target add x86_64-apple-darwin
+      - name: Install frontend dependencies
+        run: pnpm install
+      - name: Build universal Mac app
+        run: pnpm tauri build --target universal-apple-darwin
+      - name: Upload Mac installer
+        uses: softprops/action-gh-release@v2
+        with:
+          files: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install frontend dependencies
+        run: pnpm install
+      - name: Build Tauri app
+        run: pnpm tauri build
+      - name: Upload Linux AppImage
+        uses: softprops/action-gh-release@v2
+        with:
+          files: src-tauri/target/release/bundle/appimage/*.AppImage
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.5 — LANDING PAGE
+file: landing/index.html
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Single HTML file. No frameworks. Inline CSS only.
+Deploy root of /landing folder to Vercel.
+
+Design must match app branding exactly:
+  Background: #0d0d1a
+  Text: #ffffff / #a0a0b0
+  Buttons: #ff6b35
+  Font: Inter from Google Fonts
+
+Structure:
+  1. Nav: "ClawDesk" logo left, "Download" anchor right
+
+  2. Hero section:
+     Large heading: "Your AI assistant."
+     Second line: "On your computer. Private."
+     Subtext: "No terminal. No setup. No cloud. Just download and talk."
+     Small badge: "Powered by OpenClaw · 145,000 GitHub stars"
+
+  3. Download buttons (3, side by side on desktop, stacked on mobile):
+     [⬇ Windows]  [⬇ Mac]  [⬇ Linux]
+     Under Mac: "Intel & Apple Silicon M1/M2/M3"
+
+     URLs use GitHub latest release pattern:
+     Windows: https://github.com/[username]/clawdesk/releases/latest/download/ClawDesk_0.1.0_x64_en-US.msi
+     Mac:     https://github.com/[username]/clawdesk/releases/latest/download/ClawDesk_0.1.0_universal.dmg
+     Linux:   https://github.com/[username]/clawdesk/releases/latest/download/clawdesk_0.1.0_amd64.AppImage
+
+     NOTE: Update version numbers when releasing new versions.
+
+  4. How it works (3 steps, icon + text):
+     1. Download ClawDesk
+     2. Enter your AI access key
+     3. Talk to your AI
+
+  5. Privacy callout box (dark card, orange left border):
+     "Your conversations never leave your computer.
+      No account. No server. No data collection.
+      ClawDesk runs 100% locally."
+
+  6. Warning sections (HTML <details> tags — collapsed by default):
+
+     Windows warning:
+     <details>
+       <summary>⚠️ Windows shows a security warning?</summary>
+       This is normal for apps without a code signing certificate.
+       1. Click "More info"
+       2. Click "Run anyway"
+       [image: windows-warning.png]
+     </details>
+
+     Mac warning:
+     <details>
+       <summary>⚠️ Mac says the app cannot be opened?</summary>
+       Option A (recommended):
+         Right-click ClawDesk.dmg → Open → click Open
+       Option B (if you see "app is damaged"):
+         Open Terminal and run:
+         xattr -cr /Applications/ClawDesk.app
+         Then try opening again.
+       [image: mac-warning.png]
+     </details>
+
+     Linux:
+     <details>
+       <summary>🐧 Linux setup</summary>
+       chmod +x ClawDesk-Linux.AppImage
+       ./ClawDesk-Linux.AppImage
+     </details>
+
+  7. Footer:
+     "ClawDesk is open source · GitHub"
+     "Built on OpenClaw"
+     "Not affiliated with Anthropic, OpenAI, or Google"
+
+  8. Make it responsive (mobile-friendly):
+     Download buttons stack vertically on screens under 600px
+     Font sizes reduce slightly on mobile
+     Padding adjusts for small screens
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.6 — PLATFORM-SPECIFIC PROBLEMS TO PREVENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+These problems WILL happen on users' machines.
+Handle all of them proactively before they reach us as bug reports.
+
+── WINDOWS ──
+
+Problem: "VCRUNTIME140.dll not found" or "MSVCP140.dll missing"
+Cause: Microsoft Visual C++ Runtime not installed (common on fresh Windows)
+Fix: In the NSIS/MSI installer, bundle the VC++ redistributable.
+In tauri.conf.json under bundle.windows:
+  "webviewInstallMode": { "type": "downloadBootstrapper" }
+This makes the installer automatically install WebView2 and VC++ runtime.
+
+Problem: WebView2 not installed (Windows 10 older versions)
+Cause: Tauri uses WebView2 which ships with Windows 11 but may be missing on older Windows 10
+Fix: "webviewInstallMode": { "type": "downloadBootstrapper" } (same as above)
+This downloads and installs WebView2 silently if missing.
+
+Problem: App installed but won't launch, no error shown
+Cause: Usually WebView2 or VC++ runtime missing
+Fix: Same as above — the bootstrapper handles it silently.
+
+Problem: Windows Defender SmartScreen blocks .exe installer
+Cause: No code signing certificate (costs $200+/year — skip for now)
+Fix: Landing page clearly explains: "More info → Run anyway"
+This is expected and normal for new unsigned apps.
+
+Problem: App installs but can't find openclaw after reboot
+Cause: PATH issues with local install
+Fix: Always use absolute paths to openclaw binary — never bare "openclaw" command.
+Path: [appDataDir]/engine/node_modules/.bin/openclaw.cmd (Windows)
+
+── MAC ──
+
+Problem: "ClawDesk is damaged and cannot be opened"
+Cause: macOS quarantine attribute added by Safari/Chrome during download
+Fix: Landing page instructions: xattr -cr /Applications/ClawDesk.app
+This removes the quarantine flag.
+
+Problem: "ClawDesk cannot be opened because developer cannot be verified"
+Cause: No Apple Developer notarization ($99/year — skip for now)
+Fix: Landing page instructions: Right-click → Open → Open
+This bypasses Gatekeeper for unnotarized apps.
+
+Problem: App works on Intel Mac but not Apple Silicon (M1/M2/M3)
+Cause: Built for x86 only
+Fix: ALWAYS use --target universal-apple-darwin in GitHub Actions.
+Universal binary works on both. Never skip this flag.
+
+Problem: App opens but WebView is blank white screen
+Cause: macOS 14+ security changes to WebKit
+Fix: In tauri.conf.json security.csp, ensure 'unsafe-eval' is included.
+Already in our config above.
+
+── LINUX ──
+
+Problem: "AppImage cannot be executed" — permission denied
+Cause: Downloaded without execute permission
+Fix: Landing page instructions: chmod +x before running
+This is standard for AppImages.
+
+Problem: App launches but shows blank window
+Cause: Missing WebKit/GTK libraries
+Fix: Landing page instructions for apt-get install webkit2gtk
+OR: User is on a minimal distro without desktop dependencies.
+
+Problem: FUSE not available (needed for AppImage)
+Cause: Older kernels or containers
+Fix: Add to landing page Linux section:
+  "If AppImage fails, try: ./ClawDesk.AppImage --no-sandbox"
+
+── ALL PLATFORMS ──
+
+Problem: OpenClaw gateway port 18789 already in use
+Cause: Previous crash left process running, or another app uses this port
+Fix: Already handled in code — kill port before starting.
+Verify this code path exists and is tested.
+
+Problem: First-time bootstrap fails silently at 0%
+Cause: Firewall blocking npm registry (corporate networks, school networks)
+User-visible fix: Show message "If setup is stuck, check your firewall or try a different network"
+Show this after 60 seconds of no progress.
+
+Problem: API key validation times out
+Cause: User behind proxy or slow connection
+Fix: Increase validation timeout to 15 seconds (not 5 or 10).
+After timeout show: "Connection slow. Check your internet and try again."
+
+Problem: App works first day, broken next day
+Cause: Laptop sleep killed OpenClaw process
+Fix: Already handled with onFocus restart.
+Verify this is tested: close laptop, wait 5 minutes, open laptop, app should auto-recover.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3.7 — TRIGGER FIRST RELEASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After everything above is committed and pushed:
+
+  git add .
+  git commit -m "feat: add publishing pipeline and branding"
+  git push origin main
+  git tag v0.1.0
+  git push origin v0.1.0
+
+Then wait 15-20 minutes and verify GitHub Actions tab shows 3 green jobs.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINAL VERIFICATION — ALL MUST PASS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Branding:
+□ App icon is the orange claw design (not default Tauri icon)
+□ Icon visible in Windows taskbar, Mac dock, Linux app launcher
+□ Window title shows "ClawDesk" (not "Tauri App")
+□ All screens use #0d0d1a background and Inter font
+□ Buttons are orange (#ff6b35), not default blue
+
+Core functionality (re-verify):
+□ Valid API key → Chat working in under 60 seconds
+□ Invalid API key → friendly error message (no stack traces)
+□ Close terminal → app keeps running
+□ Close and reopen → Chat in under 5 seconds, no onboarding again
+□ Close laptop 5 min → open → Chat auto-recovers (Reconnecting banner then gone)
+□ Open app twice → second window focuses first (no crash, no duplicate process)
+
+Publishing:
+□ pnpm tauri build completes with zero errors on dev machine
+□ Built .msi file exists in target/release/bundle/msi/
+□ GitHub Actions: all 3 jobs (Windows/Mac/Linux) complete green
+□ GitHub Release has at minimum: .msi file and .dmg file and .AppImage file
+□ Landing page live on Vercel, all download links work
+□ Download and install .msi on a DIFFERENT Windows computer
+  → Opens with correct icon
+  → Shows branding correctly
+  → Chat works without terminal
+  → Windows warning flow works (More info → Run anyway)
+□ Vercel landing page looks correct on mobile screen (responsive)
+
+Do not mark Phase 3 complete until every checkbox above is checked.
