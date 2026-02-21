@@ -79,7 +79,7 @@ export default function ChatScreen({ onOpenSettings }: ChatScreenProps) {
 
             <div className="chat-toolbar">
                 <div className="toolbar-brand">
-                    <span className="brand-icon">🦞</span>
+                    <span className="brand-icon">🦾</span>
                     <span>ClawDesk</span>
                     <span className="toolbar-status"></span>
                 </div>

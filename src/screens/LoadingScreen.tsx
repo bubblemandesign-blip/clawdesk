@@ -7,7 +7,7 @@ export default function LoadingScreen({ msg, pct }: LoadingScreenProps) {
     return (
         <div className="screen loading-screen">
             <div className="loading-card">
-                <div className="logo-icon logo-pulse">🦞</div>
+                <div className="logo-icon logo-pulse">🦾</div>
                 <h2 className="loading-title">Setting up ClawDesk</h2>
 
                 <div className="progress-container">

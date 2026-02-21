@@ -21,11 +21,11 @@
   --text-secondary: #888888;
   --text-muted: #4a4a4a;
 
-  /* Accent — clean orange, no neon */
-  --accent: #e8550f;
-  --accent-hover: #f06a28;
-  --accent-subtle: rgba(232, 85, 15, 0.08);
-  --accent-gradient: linear-gradient(135deg, #e8550f 0%, #d14500 100%);
+  /* Accent — clean silver/gray, no neon */
+  --accent: #d5d5d5;
+  --accent-hover: #ffffff;
+  --accent-subtle: rgba(255, 255, 255, 0.05);
+  --accent-gradient: linear-gradient(135deg, #d5d5d5 0%, #a0a0a0 100%);
 
   /* Status */
   --success: #22c55e;
@@ -37,7 +37,7 @@
   /* Borders — 3D depth via layered borders */
   --border: rgba(255, 255, 255, 0.05);
   --border-light: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(232, 85, 15, 0.4);
+  --border-focus: rgba(255, 255, 255, 0.3);
 
   /* Radii */
   --radius-sm: 8px;
@@ -208,7 +208,7 @@ body,
 .key-input:focus {
   background: var(--bg-input-focus);
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 2px rgba(232, 85, 15, 0.15);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
 .key-input.input-error {
@@ -229,7 +229,7 @@ body,
   padding: 4px 12px;
   background: var(--accent-subtle);
   color: var(--accent);
-  border: 1px solid rgba(232, 85, 15, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-full);
   font-size: 11px;
   font-weight: 600;
@@ -262,7 +262,7 @@ body,
   width: 100%;
   padding: 16px 24px;
   background: var(--accent-gradient);
-  color: white;
+  color: #000;
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font);
@@ -676,7 +676,7 @@ body,
 }
 
 ::selection {
-  background: rgba(232, 85, 15, 0.25);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
 }
 

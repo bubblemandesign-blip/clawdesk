@@ -196,7 +196,7 @@ export default function App() {
       {state === 'LOADING' && (
         <div className="screen loading-screen">
           <div className="loading-card">
-            <div className="logo-icon logo-pulse">🦞</div>
+            <div className="logo-icon logo-pulse">🦾</div>
           </div>
         </div>
       )}

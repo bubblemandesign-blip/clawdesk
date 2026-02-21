@@ -52,7 +52,7 @@ export default function OnboardingScreen({ onStart, error, loading }: Onboarding
         <div className="screen onboarding-screen">
             <div className="onboarding-card">
                 <div className="logo-section">
-                    <div className="logo-icon">🦞</div>
+                    <div className="logo-icon">🦾</div>
                     <h1 className="app-title">ClawDesk</h1>
                     <p className="app-subtitle">Your AI assistant. On your computer. Private.</p>
                     <p className="app-tagline">Powered by OpenClaw</p>

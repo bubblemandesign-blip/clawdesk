@@ -20,14 +20,14 @@
         }
 
         :root {
-            --bg: #050505;
-            --surface: rgba(17, 17, 17, 0.8);
-            --accent: #ff4d00;
-            --accent-hover: #ff6b2b;
-            --accent-glow: rgba(255, 77, 0, 0.2);
-            --text: #f0f0f0;
-            --text-muted: #888888;
-            --border: rgba(255, 255, 255, 0.08);
+            --bg: #000000;
+            --surface: #0a0a0a;
+            --accent: #ffffff;
+            --accent-hover: #cccccc;
+            --accent-glow: rgba(255, 255, 255, 0.05);
+            --text: #e5e5e5;
+            --text-muted: #666666;
+            --border: rgba(255, 255, 255, 0.1);
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
@@ -53,8 +53,8 @@
             position: fixed;
             inset: 0;
             background-image:
-                linear-gradient(rgba(255, 77, 0, 0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 77, 0, 0.025) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
             background-size: 80px 80px;
             mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 10%, transparent 100%);
             -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 10%, transparent 100%);
@@ -95,20 +95,21 @@
         }
 
         .nav-link {
-            color: var(--accent);
+            color: var(--text);
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
-            padding: 8px 20px;
-            border: 1px solid rgba(255, 77, 0, 0.3);
-            border-radius: 8px;
+            padding: 8px 24px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
             transition: all 0.2s;
+            background: #111;
         }
 
         .nav-link:hover {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+            background: var(--text);
+            color: #000;
+            border-color: var(--text);
         }
 
         /* ---- Hero ---- */
@@ -126,14 +127,14 @@
             transform: translateX(-50%);
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(255, 77, 0, 0.08) 0%, transparent 65%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 65%);
             pointer-events: none;
         }
 
         .hero-logo {
             font-size: 80px;
             margin-bottom: 24px;
-            filter: drop-shadow(0 4px 40px rgba(255, 77, 0, 0.4));
+            filter: drop-shadow(0 4px 40px rgba(255, 255, 255, 0.15));
             position: relative;
             z-index: 1;
         }
@@ -209,9 +210,9 @@
         }
 
         .dl-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 60px rgba(255, 77, 0, 0.12);
-            transform: translateY(-4px);
+            border-color: var(--text);
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
         }
 
         .dl-icon {
@@ -418,34 +419,35 @@
 <body>
 
     <nav>
-        <a href="#" class="nav-brand"><span>🦞</span> ClawDesk</a>
-        <a href="#download" class="nav-link">Download</a>
+        <a href="#" class="nav-brand"><span>🦾</span> ClawDesk</a>
+        <a href="#download" class="nav-link">Get Started</a>
     </nav>
 
     <!-- Hero -->
     <section class="hero">
-        <div class="hero-logo">🦞</div>
-        <h1>Your <span class="accent">AI</span> assistant.<br>On your computer. Private.</h1>
-        <p class="hero-sub">No terminal. No setup. No cloud. Just download and talk.</p>
-        <div class="hero-badge">Powered by <strong>OpenClaw</strong></div>
+        <div class="hero-logo">🦾</div>
+        <h1>Your <span class="accent">AI</span> assistant.<br>On your computer. <span class="accent">Private.</span>
+        </h1>
+        <p class="hero-sub">No terminal. No setup. No cloud. Precision automation for your personal workstation.</p>
+        <div class="hero-badge">Technical foundation by <strong>OpenClaw</strong></div>
     </section>
 
     <!-- Downloads -->
     <section class="download-section" id="download">
         <div class="download-grid">
-            <a href="https://github.com/clawdesk/clawdesk/releases/latest/download/ClawDesk_0.1.0_x64_en-US.msi"
+            <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/ClawDesk_0.1.0_x64_en-US.msi"
                 class="dl-card">
                 <div class="dl-icon">⬇️</div>
                 <div class="dl-title">Windows</div>
                 <div class="dl-sub">64-bit · MSI Installer</div>
             </a>
-            <a href="https://github.com/clawdesk/clawdesk/releases/latest/download/ClawDesk_0.1.0_universal.dmg"
+            <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/ClawDesk_0.1.0_universal.dmg"
                 class="dl-card">
                 <div class="dl-icon">⬇️</div>
                 <div class="dl-title">Mac</div>
                 <div class="dl-sub">Intel & Apple Silicon</div>
             </a>
-            <a href="https://github.com/clawdesk/clawdesk/releases/latest/download/clawdesk_0.1.0_amd64.AppImage"
+            <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/clawdesk_0.1.0_amd64.AppImage"
                 class="dl-card">
                 <div class="dl-icon">⬇️</div>
                 <div class="dl-title">Linux</div>
