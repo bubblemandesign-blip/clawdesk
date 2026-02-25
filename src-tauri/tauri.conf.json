@@ -24,7 +24,10 @@
     ],
     "security": {
       "csp": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' http://localhost:18789 ws://localhost:18789 https://api.anthropic.com https://api.openai.com https://api.groq.com https://api.moonshot.cn https://api.deepseek.com https://generativelanguage.googleapis.com; frame-src http://localhost:18789;"
-    }
+    },
+    "externalBin": [
+      "binaries/openclaw"
+    ]
   },
   "bundle": {
     "active": true,
@@ -40,8 +43,17 @@
       "webviewInstallMode": {
         "type": "downloadBootstrapper"
       },
-      "wix": {},
-      "nsis": {},
+      "wix": {
+        "language": "en-US",
+        "bannerPath": "assets/installer-banner.bmp",
+        "dialogImagePath": "assets/installer-dialog.bmp"
+      },
+      "nsis": {
+        "displayLanguageSelector": true,
+        "installerIcon": "icons/icon.ico",
+        "headerImage": "assets/installer-banner.bmp",
+        "sidebarImage": "assets/installer-dialog.bmp"
+      },
       "msix": {}
     }
   },
