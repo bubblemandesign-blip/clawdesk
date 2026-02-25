@@ -195,8 +195,8 @@ export default function App() {
     <>
       {state === 'LOADING' && (
         <div className="screen loading-screen">
-          <div className="loading-card">
-            <div className="logo-icon logo-pulse">🦾</div>
+          <div className="logo-icon logo-pulse">
+            <img src="/assets/logo.png" alt="Logo" style={{ width: '80px', height: 'auto' }} />
           </div>
         </div>
       )}
