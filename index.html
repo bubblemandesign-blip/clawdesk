@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClawDesk — Your AI Assistant. On Your Computer. Private.</title>
+    <meta name="description"
+        content="ClawDesk wraps OpenClaw into a beautiful desktop app. No terminal, no setup, no cloud. Download for Windows, Mac, or Linux.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #000000;
+            --surface: #0a0a0a;
+            --accent: #ffffff;
+            --accent-hover: #cccccc;
+            --accent-glow: rgba(255, 255, 255, 0.05);
+            --text: #e5e5e5;
+            --text-muted: #666666;
+            --border: rgba(255, 255, 255, 0.1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+        }
+
+        ::selection {
+            background: rgba(255, 77, 0, 0.3);
+        }
+
+        /* ---- Grid Background ---- */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 10%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 10%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ---- Nav ---- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 40px;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-brand span {
+            font-size: 22px;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 24px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            transition: all 0.2s;
+            background: #111;
+        }
+
+        .nav-link:hover {
+            background: var(--text);
+            color: #000;
+            border-color: var(--text);
+        }
+
+        /* ---- Hero ---- */
+        .hero {
+            text-align: center;
+            padding: 180px 24px 100px;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .hero-logo {
+            font-size: 80px;
+            margin-bottom: 24px;
+            filter: drop-shadow(0 4px 40px rgba(255, 255, 255, 0.15));
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 6vw, 64px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 .accent {
+            color: var(--accent);
+        }
+
+        .hero-sub {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            font-size: 13px;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge strong {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* ---- Download ---- */
+        .download-section {
+            padding: 40px 24px 80px;
+            text-align: center;
+        }
+
+        .download-grid {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .dl-card {
+            flex: 1;
+            min-width: 200px;
+            max-width: 220px;
+            padding: 28px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.25s;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .dl-card:hover {
+            border-color: var(--text);
+            box-shadow: 0 0 60px rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .dl-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .dl-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .dl-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ---- How it works ---- */
+        .steps-section {
+            padding: 80px 24px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 48px;
+        }
+
+        .steps-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 200px;
+            max-width: 240px;
+        }
+
+        .step-num {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 77, 0, 0.1);
+            border: 1px solid rgba(255, 77, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 0 auto 16px;
+        }
+
+        .step h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* ---- Privacy ---- */
+        .privacy-section {
+            padding: 40px 24px 80px;
+        }
+
+        .privacy-card {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 32px 32px 32px 36px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 12px;
+        }
+
+        .privacy-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .privacy-card p {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* ---- Troubleshooting ---- */
+        .troubleshoot-section {
+            padding: 40px 24px 80px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        details {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        summary {
+            padding: 16px 20px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            list-style: none;
+            transition: background 0.2s;
+        }
+
+        summary:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-content {
+            padding: 16px 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .detail-content code {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ---- Footer ---- */
+        footer {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer p {
+            margin-bottom: 4px;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            nav {
+                padding: 12px 20px;
+            }
+
+            .hero {
+                padding: 140px 20px 60px;
+            }
+
+            .hero-logo {
+                font-size: 56px;
+            }
+
+            .download-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .dl-card {
+                max-width: 100%;
+            }
+
+            .steps-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="#" class="nav-brand"><img src="assets/logo.png" alt="Logo"
+                style="height: 24px; width: auto; margin-right: 8px;"> ClawDesk</a>
+        <a href="#download" class="nav-link">Get Started</a>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-logo">
+            <img src="assets/logo.png" alt="ClawDesk Logo" style="width: 120px; height: auto;">
+        </div>
+        <h1>Your <span class="accent">AI</span> assistant.<br>On your computer. <span class="accent">Private.</span>
+        </h1>
+        <p class="hero-sub">No terminal. No setup. No cloud. Precision automation for your personal workstation.</p>
+        <div class="hero-badge">Technical foundation by <strong>OpenClaw</strong></div>
+    </section>
+
+    <!-- Downloads -->
+    <section class="download-section" id="download">
+
+        <div class="download-grid">
+            <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/ClawDesk_0.1.0_x64_en-US.msi"
+                class="dl-card">
+                <div class="dl-icon">⬇️</div>
+                <div class="dl-title">Windows</div>
+                <div class="dl-sub">64-bit · MSI Installer</div>
+            </a>
+            <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/ClawDesk_0.1.0_universal.dmg"
+                class="dl-card">
+                <div class="dl-icon">⬇️</div>
+                <div class="dl-title">Mac</div>
+                <div class="dl-sub">Intel & Apple Silicon</div>
+            </a>
+            <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/clawdesk_0.1.0_amd64.AppImage"
+                class="dl-card">
+                <div class="dl-icon">⬇️</div>
+                <div class="dl-title">Linux</div>
+                <div class="dl-sub">AppImage · x86_64</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="steps-section">
+        <h2 class="section-title">How it works</h2>
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h3>Download ClawDesk</h3>
+                <p>Pick your platform above. Install like any app.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h3>Enter your AI key</h3>
+                <p>Supports Anthropic, OpenAI, Google, Groq, and more.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h3>Talk to your AI</h3>
+                <p>Chat starts instantly. All conversations stay on your machine.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy -->
+    <section class="privacy-section">
+        <div class="privacy-card">
+            <h3>🔒 Your conversations never leave your computer.</h3>
+            <p>No account. No server. No data collection. ClawDesk runs 100% locally. Your API key is stored encrypted
+                on your device only.</p>
+        </div>
+    </section>
+
+    <!-- Troubleshooting -->
+    <section class="troubleshoot-section">
+        <details>
+            <summary>🛡️ Windows shows a red security warning?</summary>
+            <div class="detail-content">
+                <p>Since ClawDesk is independent open-source, Windows protects you by default.</p>
+                <div
+                    style="background: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; margin: 12px 0; border: 1px solid var(--border);">
+                    <p><strong>Step 1:</strong> Click the underlined <span
+                            style="text-decoration: underline; color: #fff; cursor: pointer;">"More info"</span> link
+                        inside the red box.</p>
+                    <p style="margin-top: 8px;"><strong>Step 2:</strong> The <strong style="color: #fff;">"Run
+                            anyway"</strong> button will now appear at the bottom. Click it to install.</p>
+                </div>
+                <p>You can always inspect our code on GitHub to verify our safety.</p>
+            </div>
+        </details>
+        <details>
+            <summary>⚠️ Mac says the app cannot be opened?</summary>
+            <div class="detail-content">
+                <p><strong>Option A:</strong> Right-click ClawDesk → Open → Click Open</p>
+                <p><strong>Option B:</strong> If you see "app is damaged", open Terminal and run:</p>
+                <p><code>xattr -cr /Applications/ClawDesk.app</code></p>
+            </div>
+        </details>
+        <details>
+            <summary>🐧 Linux setup</summary>
+            <div class="detail-content">
+                <p><code>chmod +x ClawDesk-Linux.AppImage</code></p>
+                <p><code>./ClawDesk-Linux.AppImage</code></p>
+                <p>If it fails, try: <code>./ClawDesk-Linux.AppImage --no-sandbox</code></p>
+            </div>
+        </details>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>ClawDesk is <a href="https://github.com/clawdesk/clawdesk">open source</a> · Built on <a
+                href="https://github.com/openclaw/openclaw">OpenClaw</a></p>
+        <p>Not affiliated with Anthropic, OpenAI, or Google.</p>
+    </footer>
+
+</body>
+
+</html>
