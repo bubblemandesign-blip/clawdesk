@@ -132,11 +132,17 @@
         }
 
         .hero-logo {
-            font-size: 80px;
             margin-bottom: 24px;
-            filter: drop-shadow(0 4px 40px rgba(255, 255, 255, 0.15));
             position: relative;
             z-index: 1;
+        }
+
+        .hero-logo img,
+        .nav-brand img {
+            mix-blend-mode: screen;
+            filter: brightness(1.2) contrast(1.3);
+            mask-image: radial-gradient(circle, black 35%, transparent 65%);
+            -webkit-mask-image: radial-gradient(circle, black 35%, transparent 65%);
         }
 
         .hero h1 {
