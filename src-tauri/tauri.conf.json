@@ -41,7 +41,8 @@
         "type": "downloadBootstrapper"
       },
       "wix": {},
-      "nsis": {}
+      "nsis": {},
+      "msix": {}
     }
   },
   "plugins": {
