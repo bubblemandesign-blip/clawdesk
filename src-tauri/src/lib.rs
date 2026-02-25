@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command as StdCommand;
-use tauri::Manager;
 
 // ============================================================
 // Tauri Commands — exposed to the React frontend via invoke()
@@ -177,30 +176,14 @@ fn detect_chrome() -> Option<String> {
     None
 }
 
-/// Spawn gateway process detached using Tauri's sidecar API
+/// Spawn gateway process detached
 #[tauri::command]
 fn spawn_gateway_process(
-    app: tauri::AppHandle,
     cmd: String,
     args: Vec<String>,
     env_key: String,
     env_val: String,
 ) -> Result<(), String> {
-    // If it's a sidecar name (simple string) and NOT a full path, use the sidecar API
-    // We check if the command looks like a direct path (contains slashes)
-    if cmd == "openclaw" || cmd == "openclaw.exe" {
-        let sidecar_cmd = tauri::process::Command::new_sidecar("openclaw")
-            .map_err(|e| format!("Sidecar 'openclaw' not found in bundle: {}", e))?
-            .args(args)
-            .env(env_key, env_val);
-
-        sidecar_cmd
-            .spawn()
-            .map_err(|e| format!("Failed to spawn sidecar: {}", e))?;
-        return Ok(());
-    }
-
-    // Otherwise, it's a direct path (from our bootstrap process) or a system command
     let mut command = StdCommand::new(&cmd);
     command.args(&args);
     command.env(&env_key, &env_val);
@@ -215,23 +198,6 @@ fn spawn_gateway_process(
     match command.spawn() {
         Ok(_) => Ok(()),
         Err(e) => Err(format!("Failed to spawn process '{}': {}", cmd, e)),
-    }
-
-    // Fallback for custom nodes/commands
-    let mut command = StdCommand::new(&cmd);
-    command.args(&args);
-    command.env(&env_key, &env_val);
-
-    #[cfg(target_os = "windows")]
-    {
-        use std::os::windows::process::CommandExt;
-        const CREATE_NO_WINDOW: u32 = 0x08000000;
-        command.creation_flags(CREATE_NO_WINDOW);
-    }
-
-    match command.spawn() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(format!("Failed to spawn gateway: {}", e)),
     }
 }
 

@@ -1,6 +1,6 @@
 [package]
 name = "clawdesk"
-version = "0.1.0"
+version = "0.1.2"
 description = "ClawDesk — Your personal AI assistant"
 authors = ["you"]
 edition = "2021"
@@ -8,6 +8,11 @@ edition = "2021"
 [lib]
 name = "clawdesk_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
