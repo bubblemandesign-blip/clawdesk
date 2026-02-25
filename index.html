@@ -413,48 +413,13 @@
                 align-items: center;
             }
         }
-
-        /* ---- Alert Box ---- */
-        .install-alert {
-            max-width: 700px;
-            margin: 0 auto 32px;
-            padding: 20px 24px;
-            background: rgba(232, 85, 15, 0.1);
-            border: 1px solid rgba(232, 85, 15, 0.3);
-            border-radius: 12px;
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-            text-align: left;
-        }
-
-        .install-alert-icon {
-            font-size: 24px;
-        }
-
-        .install-alert-text h4 {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: #fff;
-        }
-
-        .install-alert-text p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .install-alert-text strong {
-            color: #fff;
-        }
     </style>
 </head>
 
 <body>
 
     <nav>
-        <a href="#" class="nav-brand"><img src="public/assets/logo.png" alt="Logo"
+        <a href="#" class="nav-brand"><img src="assets/logo.png" alt="Logo"
                 style="height: 24px; width: auto; margin-right: 8px;"> ClawDesk</a>
         <a href="#download" class="nav-link">Get Started</a>
     </nav>
@@ -462,7 +427,7 @@
     <!-- Hero -->
     <section class="hero">
         <div class="hero-logo">
-            <img src="public/assets/logo.png" alt="ClawDesk Logo" style="width: 120px; height: auto;">
+            <img src="assets/logo.png" alt="ClawDesk Logo" style="width: 120px; height: auto;">
         </div>
         <h1>Your <span class="accent">AI</span> assistant.<br>On your computer. <span class="accent">Private.</span>
         </h1>
@@ -472,16 +437,6 @@
 
     <!-- Downloads -->
     <section class="download-section" id="download">
-
-        <div class="install-alert">
-            <div class="install-alert-icon">⚠️</div>
-            <div class="install-alert-text">
-                <h4>Windows SmartScreen Warning</h4>
-                <p>Since we are open source and don't pay for expensive certificates, Windows may show a warning.
-                    Click <strong>"More info"</strong> then <strong>"Run anyway"</strong> to install.
-                    You can always inspect our code on GitHub.</p>
-            </div>
-        </div>
 
         <div class="download-grid">
             <a href="https://github.com/bubblemandesign-blip/clawdesk/releases/latest/download/ClawDesk_0.1.0_x64_en-US.msi"
